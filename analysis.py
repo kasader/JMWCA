@@ -1,5 +1,6 @@
 import os
 import re
+import openFiles
 
 def extract_dataset(fileName):
     dataset = []
@@ -13,7 +14,7 @@ def extract_dataset(fileName):
     infile.close()
     return dataset
 
-def create_mimetic_list():
+def init_word_list():
     dataset = []
     directory_path = os.getcwd()
     infile = open(directory_path+"/onomatope.txt", 'r')
@@ -24,14 +25,24 @@ def create_mimetic_list():
     infile.close()
     return dataset
 
-def mimetic_freq(mimetics, data):
-    mimetic_freq = []
-    for line in range(len(data)):
-        for word in range(len(mimetics)):
-            #print("WORD:", data[line][1], "== MIMETIC: ", mimetics[word][0])
-            if (data[line][1] == mimetics[word][0]):
-                mimetic_freq.append(data[line])
-    return mimetic_freq
+def word_freq(word_list, data, mode):
+    if (mode == 0):
+        word_freq = []
+        for line in range(len(data)):
+            for word in range(len(word_list)):
+                #print("WORD:", data[line][1], "== MIMETIC: ", mimetics[word][0])
+                if (data[line][1] == word_list[word][0]):
+                    word_freq.append(data[line])
+        return word_freq
+    elif (mode == 1):
+        for file in range(len(data)):
+            for line in range(len(data[file])):
+                for word in range(len(word_list)):
+                    if (data[file][word][1] == word_list[word][0]):
+                        word_freq.append(data[line])
+                    #for item in range(len(word_freq)):
+                return word_freq
+                
 
 def write_out(freq_list, fileName):
     directory_path = os.getcwd()
@@ -52,22 +63,30 @@ def write_out(freq_list, fileName):
     infile.close()
 
 def main():
-    mimetics = create_mimetic_list()
-    #print(mimetics_list)
-    #for word in range(len(mimetics_list)):
-    #    print("Mimetic [%d]: %s" % (word, mimetics_list[word]))
-    print("Please input file location: ")
-    fileLocation = input()
-    data = extract_dataset(fileLocation)
-    freq_list = mimetic_freq(mimetics, data)
-    write_out(freq_list, fileLocation)
-    #print(freq_list, fileLocation)
-    #dataset = list(filter(None, dataset))
-    #print("Dataset: "+str(dataset))
-    # for i in range(len(dataset)):
-        # print("Dataset: "+str(dataset[i]))
-        #for j in range(len(dataset[i])):
-            #print(dataset[i][j])
+    mode = 0
+    inputFlag = False
+    while (inputFlag == False):
+        print("Please select read-out method:\n\t 1: Combine All\n\t 2: Individual Reports")
+        input_data = input()
+        mode = int(input_data)
+        if (mode == 1 or mode == 2):
+            inputFlag = True
+        else:
+            print("Please input valid data!")
 
+    word_list = init_word_list()
+
+    if (mode == 2):
+        print("Please input file location: ")
+        fileLocation = input()
+        data = extract_dataset(fileLocation)
+        freq_list = word_freq(word_list, data, 0)
+        write_out(freq_list, fileLocation)
+
+    elif (mode == 1):
+        extract_all_data()
+        data = extract_dataset(fileLocation)
+        freq_list = word_freq(word_list, data, 1)
+        write_out(freq_list, fileLocation)
 
 main()
