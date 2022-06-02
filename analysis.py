@@ -5,7 +5,7 @@ import openFiles
 def extract_dataset(fileName):
     dataset = []
     directory_path = os.getcwd()
-    infile = open(directory_path+fileName, 'r')
+    infile = open(directory_path+"/input_data/"+fileName, 'r')
     for line in infile:
         line = line.strip()
         line = line.split()
@@ -27,12 +27,15 @@ def init_word_list():
 
 def word_freq(word_list, data, mode):
     if (mode == 0):
+        totMimetic = 0.0
         word_freq = []
         for line in range(len(data)):
             for word in range(len(word_list)):
                 #print("WORD:", data[line][1], "== MIMETIC: ", mimetics[word][0])
                 if (data[line][1] == word_list[word][0]):
                     word_freq.append(data[line])
+                    totMimetic += float(data[line][4])
+        print(totMimetic)
         return word_freq
     elif (mode == 1):
         for file in range(len(data)):
@@ -46,7 +49,7 @@ def word_freq(word_list, data, mode):
 
 def write_out(freq_list, fileName):
     directory_path = os.getcwd()
-    infile = open(directory_path+fileName+"_OUTPUT", 'w')
+    infile = open(directory_path+"/input_data/OUTPUT/"+fileName, 'w')
     writeFreq_list = []
     for line in range(len(freq_list)):
         currentLine = ""
